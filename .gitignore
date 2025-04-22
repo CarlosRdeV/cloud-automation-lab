@@ -1,0 +1,11 @@
+# Terraform folders
+.terraform/
+.terraform.lock.hcl
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+
+# Backup and logs
+*.backup
+*.log

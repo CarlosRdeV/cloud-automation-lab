@@ -1,5 +1,5 @@
 resource "aws_instance" "web" {
-  ami                    = "ami-0c02fb55956c7d316" # Ubuntu 20.04 LTS en us-east-1
+  ami = "ami-04505e74c0741db8d"
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.ssh.id]
@@ -12,7 +12,7 @@ resource "aws_instance" "web" {
               DEBIAN_FRONTEND=noninteractive apt-get install -y nginx
               systemctl enable nginx
               systemctl start nginx
-              echo "Hola desde tu EC2 con NGINX 🚀" > /var/www/html/index.html
+              echo "Hola desde tu EC2 con NGINX 🚀" | sudo tee /var/www/html/index.html
             EOF
 
   tags = {

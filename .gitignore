@@ -9,3 +9,10 @@
 # Backup and logs
 *.backup
 *.log
+
+# Keys
+ec2-key
+*.pem
+*.key
+
+*.pub

@@ -1,3 +1,17 @@
-provider "aws" {
-  region = var.region
+module "vpc" {
+  source              = "./modules/vpc"
+  vpc_cidr_block      = "10.0.0.0/16"
+  subnet_cidr_block   = "10.0.1.0/24"
+  availability_zone   = "us-east-1a"
+  vpc_name            = "main-vpc"
+  subnet_name         = "main-subnet"
+}
+
+module "ec2" {
+  source              = "./modules/ec2"
+  ami                 = "ami-04505e74c0741db8d"
+  instance_type       = "t2.micro"
+  subnet_id           = module.vpc.subnet_id
+  key_name            = aws_key_pair.deployer.key_name
+  security_group_ids  = [aws_security_group.ssh.id]
 }

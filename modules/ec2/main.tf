@@ -13,7 +13,7 @@ resource "aws_instance" "web" {
               DEBIAN_FRONTEND=noninteractive apt-get install -y nginx
               systemctl enable nginx
               systemctl start nginx
-              echo "Hola desde tu EC2 con NGINX 🚀" > /var/www/html/index.html
+              echo "Hola desde tu EC2 con NGINX ahora en ambiente dev  🚀" > /var/www/html/index.html
               EOF
 
   tags = {

@@ -20,3 +20,9 @@ variable "key_name" {
   default     = "ec2-key"
 }
 
+variable "env_name" {
+  description = "Nombre del entorno (dev, qa, prod)"
+  type        = string
+}
+
+

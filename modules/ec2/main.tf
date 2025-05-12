@@ -8,15 +8,14 @@ resource "aws_instance" "web" {
 
   user_data = <<-EOF
               #!/bin/bash
-              sleep 30
               apt-get update -y
               DEBIAN_FRONTEND=noninteractive apt-get install -y nginx
               systemctl enable nginx
               systemctl start nginx
-              echo "Hola desde tu EC2 con NGINX ahora en ambiente dev  🚀" > /var/www/html/index.html
+              echo "Hola desde tu EC2 con NGINX ahora en ambiente ${var.env_name} 🚀" > /var/www/html/index.html
               EOF
 
   tags = {
-    Name = "terraform-ec2"
+    Name = "terraform-ec2-${var.env_name}"
   }
 }

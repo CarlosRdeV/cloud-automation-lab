@@ -1,5 +1,5 @@
 resource "aws_security_group" "this" {
-  name        = var.sg_name
+  name        = "${var.sg_name}-${var.env_name}" # 👈 cambio aquí
   description = var.description
   vpc_id      = var.vpc_id
 
@@ -25,6 +25,6 @@ resource "aws_security_group" "this" {
   }
 
   tags = {
-    Name = var.sg_name
+    Name = "${var.sg_name}-${var.env_name}" # 👈 también aquí
   }
 }

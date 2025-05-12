@@ -1,3 +1,9 @@
+provider "aws" {
+  alias  = "s3"
+  region = "us-east-2"
+}
+
+
 module "vpc" {
   source            = "../../modules/vpc"
   vpc_cidr_block    = "10.0.0.0/16"
@@ -26,4 +32,16 @@ module "ec2" {
   security_group_ids = [module.security_group.security_group_id]
   env_name           = var.env_name  # 👈 esto es nuevo
 }
+
+module "s3" {
+  source            = "../../modules/s3"
+  bucket_name       = "app-storage-crive"  # 👈 CAMBIA ESTO
+  env_name          = var.env_name
+  enable_versioning = true
+  force_destroy     = false
+  providers = {
+    aws = aws.s3  # 👈 Esto es clave
+  }
+}
+
 

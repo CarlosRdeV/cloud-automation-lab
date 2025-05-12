@@ -41,7 +41,7 @@ Lanza una instancia EC2 con NGINX instalado y mensaje de bienvenida personalizad
 
 ### 🔹 `s3`
 
-Crea un bucket S3 privado con bloqueo de acceso público, versionado opcional, región configurable y etiquetas por entorno.
+Crea un bucket S3 privado con bloqueo de acceso público, versionado opcional, reglas de ciclo de vida configurables, región configurable y etiquetas por entorno.
 [Ver documentación](./modules/s3/README.md)
 
 ---
@@ -76,6 +76,7 @@ terraform apply
 * Cada módulo está completamente documentado y puede reutilizarse en diferentes proyectos.
 * El módulo S3 requiere que el nombre del bucket sea único globalmente. Usa prefijos como tu nombre, proyecto o empresa para evitar errores (`BucketAlreadyExists`).
 * El módulo `s3` también requiere definir una región compatible (por ejemplo, `us-east-2`) desde el entorno que lo consuma.
+* El módulo `s3` incluye reglas de ciclo de vida configurables mediante variables, permitiendo eliminar versiones antiguas y objetos después de ciertos días si `enable_lifecycle = true`.
 
 ---
 

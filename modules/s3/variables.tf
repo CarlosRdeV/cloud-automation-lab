@@ -27,4 +27,21 @@ variable "region" {
   default     = "us-east-2"
 }
 
+variable "enable_lifecycle" {
+  description = "Habilita reglas de ciclo de vida en el bucket"
+  type        = bool
+  default     = false
+}
+
+variable "noncurrent_days" {
+  description = "Días para eliminar versiones anteriores de objetos"
+  type        = number
+  default     = 30
+}
+
+variable "expiration_days" {
+  description = "Días para eliminar objetos no versionados"
+  type        = number
+  default     = 90
+}
 

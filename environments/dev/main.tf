@@ -11,7 +11,7 @@ module "vpc" {
   availability_zone = "us-east-1a"
   vpc_name          = "main-vpc"
   subnet_name       = "main-subnet"
-  env_name           = var.env_name  # 👈 esto es nuevo
+  env_name           = var.env_name
 }
 
 module "security_group" {
@@ -19,9 +19,8 @@ module "security_group" {
   vpc_id      = module.vpc.vpc_id
   sg_name     = "allow-ssh-http"
   description = "Allow SSH and HTTP traffic"
-  env_name    = var.env_name # 👈 este es nuevo
+  env_name    = var.env_name 
 }
-
 
 module "ec2" {
   source             = "../../modules/ec2"
@@ -30,17 +29,22 @@ module "ec2" {
   subnet_id          = module.vpc.subnet_id
   key_name           = aws_key_pair.deployer.key_name
   security_group_ids = [module.security_group.security_group_id]
-  env_name           = var.env_name  # 👈 esto es nuevo
+  env_name           = var.env_name  
 }
 
 module "s3" {
   source            = "../../modules/s3"
-  bucket_name       = "app-storage-crive"  # 👈 CAMBIA ESTO
+  bucket_name       = "app-storage-crive"  
   env_name          = var.env_name
   enable_versioning = true
   force_destroy     = false
+
+  enable_lifecycle  = true
+  noncurrent_days   = 15
+  expiration_days   = 60
+  
   providers = {
-    aws = aws.s3  # 👈 Esto es clave
+    aws = aws.s3  
   }
 }
 

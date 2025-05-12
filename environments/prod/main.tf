@@ -44,7 +44,6 @@ module "s3" {
   noncurrent_days   = 15
   expiration_days   = 60
 
-
   providers = {
     aws = aws.s3
   }

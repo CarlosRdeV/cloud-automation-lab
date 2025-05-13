@@ -6,6 +6,8 @@ resource "aws_instance" "web" {
   key_name                    = var.key_name
   associate_public_ip_address = true  
 
+  iam_instance_profile = var.iam_instance_profile
+
   user_data = <<-EOF
               #!/bin/bash
               apt-get update -y

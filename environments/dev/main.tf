@@ -30,6 +30,9 @@ module "ec2" {
   key_name           = aws_key_pair.deployer.key_name
   security_group_ids = [module.security_group.security_group_id]
   env_name           = var.env_name  
+
+  iam_instance_profile = module.iam_ec2_role.instance_profile_name
+
 }
 
 module "s3" {
@@ -49,3 +52,25 @@ module "s3" {
 }
 
 
+module "iam_ec2_role" {
+  source              = "../../modules/iam"
+  role_name           = "ec2-role-${var.env_name}"
+  env_name            = var.env_name
+
+  assume_role_policy  = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  ]
+}

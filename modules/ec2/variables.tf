@@ -10,3 +10,10 @@ variable "env_name" {
   description = "Nombre del entorno"
   type        = string
 }
+
+variable "iam_instance_profile" {
+  description = "Nombre del IAM Instance Profile a asociar con la instancia EC2"
+  type        = string
+  default     = null
+}
+

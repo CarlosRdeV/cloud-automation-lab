@@ -12,7 +12,8 @@ cloud-automation-lab/
 │   ├── ec2/
 │   ├── security_group/
 │   ├── vpc/
-│   └── s3/
+│   ├── s3/
+│   └── iam/
 ├── environments/
 │   ├── dev/
 │   ├── qa/
@@ -43,6 +44,11 @@ Lanza una instancia EC2 con NGINX instalado y mensaje de bienvenida personalizad
 
 Crea un bucket S3 privado con bloqueo de acceso público, versionado opcional, reglas de ciclo de vida configurables, región configurable y etiquetas por entorno.
 [Ver documentación](./modules/s3/README.md)
+
+### 🔹 `iam`
+
+Crea roles IAM con políticas de confianza, policies gestionadas y un instance profile para EC2.
+[Ver documentación](./modules/iam/README.md)
 
 ---
 
@@ -77,6 +83,7 @@ terraform apply
 * El módulo S3 requiere que el nombre del bucket sea único globalmente. Usa prefijos como tu nombre, proyecto o empresa para evitar errores (`BucketAlreadyExists`).
 * El módulo `s3` también requiere definir una región compatible (por ejemplo, `us-east-2`) desde el entorno que lo consuma.
 * El módulo `s3` incluye reglas de ciclo de vida configurables mediante variables, permitiendo eliminar versiones antiguas y objetos después de ciertos días si `enable_lifecycle = true`.
+* El módulo `iam` permite crear roles reutilizables para EC2 (o cualquier servicio AWS) y asociar un instance profile automáticamente.
 
 ---
 

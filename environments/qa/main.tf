@@ -19,9 +19,8 @@ module "security_group" {
   vpc_id      = module.vpc.vpc_id
   sg_name     = "allow-ssh-http"
   description = "Allow SSH and HTTP traffic"
-  env_name    = var.env_name
+  env_name    = var.env_name 
 }
-
 
 module "ec2" {
   source             = "../../modules/ec2"
@@ -30,12 +29,15 @@ module "ec2" {
   subnet_id          = module.vpc.subnet_id
   key_name           = aws_key_pair.deployer.key_name
   security_group_ids = [module.security_group.security_group_id]
-  env_name           = var.env_name
+  env_name           = var.env_name  
+
+  iam_instance_profile = module.iam_ec2_role.instance_profile_name
+
 }
 
 module "s3" {
   source            = "../../modules/s3"
-  bucket_name       = "app-storage-crive"
+  bucket_name       = "app-storage-crive"  
   env_name          = var.env_name
   enable_versioning = true
   force_destroy     = false
@@ -43,11 +45,63 @@ module "s3" {
   enable_lifecycle  = true
   noncurrent_days   = 15
   expiration_days   = 60
-
-
+  
   providers = {
-    aws = aws.s3
+    aws = aws.s3  
   }
 }
 
+
+module "iam_ec2_role" {
+  source              = "../../modules/iam"
+  role_name           = "ec2-role-${var.env_name}"
+  env_name            = var.env_name
+
+  assume_role_policy  = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  ]
+
+  custom_policy_name = "access-s3-dev"
+  custom_policy_json = local.ec2_s3_access_policy
+
+}
+
+locals {
+  
+  s3_bucket_name = "${var.bucket_name}-${var.env_name}"
+
+  ec2_s3_access_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:ListBucket"
+        ],
+        Resource = "arn:aws:s3:::${local.s3_bucket_name}"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        Resource = "arn:aws:s3:::${local.s3_bucket_name}/*"
+      }
+    ]
+  })
+}
 

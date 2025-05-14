@@ -25,3 +25,8 @@ variable "env_name" {
   type        = string
 }
 
+variable "bucket_name" {
+  description = "Nombre base del bucket sin sufijo de entorno"
+  type        = string
+}
+

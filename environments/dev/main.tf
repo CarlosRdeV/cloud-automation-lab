@@ -73,4 +73,35 @@ module "iam_ec2_role" {
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
   ]
+
+  custom_policy_name = "access-s3-dev"
+  custom_policy_json = local.ec2_s3_access_policy
+
 }
+
+locals {
+  
+  s3_bucket_name = "${var.bucket_name}-${var.env_name}"
+
+  ec2_s3_access_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:ListBucket"
+        ],
+        Resource = "arn:aws:s3:::${local.s3_bucket_name}"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        Resource = "arn:aws:s3:::${local.s3_bucket_name}/*"
+      }
+    ]
+  })
+}
+

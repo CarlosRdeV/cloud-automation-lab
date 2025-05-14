@@ -47,7 +47,7 @@ Crea un bucket S3 privado con bloqueo de acceso público, versionado opcional, r
 
 ### 🔹 `iam`
 
-Crea roles IAM con políticas de confianza, policies gestionadas y un instance profile para EC2.
+Crea roles IAM con políticas de confianza, policies gestionadas y/o personalizadas, y un instance profile para EC2.
 [Ver documentación](./modules/iam/README.md)
 
 ---
@@ -80,10 +80,14 @@ terraform apply
 * Todos los recursos usan `env_name` como sufijo para evitar colisiones entre entornos.
 * La infraestructura es fácilmente extensible con nuevos módulos como RDS, Load Balancers, IAM, etc.
 * Cada módulo está completamente documentado y puede reutilizarse en diferentes proyectos.
-* El módulo S3 requiere que el nombre del bucket sea único globalmente. Usa prefijos como tu nombre, proyecto o empresa para evitar errores (`BucketAlreadyExists`).
+* El módulo `s3` requiere que el nombre del bucket sea único globalmente. Usa prefijos como tu nombre, proyecto o empresa para evitar errores (`BucketAlreadyExists`).
 * El módulo `s3` también requiere definir una región compatible (por ejemplo, `us-east-2`) desde el entorno que lo consuma.
 * El módulo `s3` incluye reglas de ciclo de vida configurables mediante variables, permitiendo eliminar versiones antiguas y objetos después de ciertos días si `enable_lifecycle = true`.
-* El módulo `iam` permite crear roles reutilizables para EC2 (o cualquier servicio AWS) y asociar un instance profile automáticamente.
+* El módulo `iam` permite crear roles reutilizables para EC2 (o cualquier servicio AWS), y ahora soporta:
+
+  * ✅ Políticas gestionadas (`managed_policy_arns`)
+  * ✅ Políticas personalizadas (`custom_policy_json`) para casos como acceso a un bucket S3 por entorno
+  * ✅ Asociación automática a EC2 mediante `iam_instance_profile`
 
 ---
 

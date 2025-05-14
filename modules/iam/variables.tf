@@ -19,4 +19,16 @@ variable "env_name" {
   type        = string
 }
 
+variable "custom_policy_name" {
+  description = "Nombre de la política personalizada (si se usa)"
+  type        = string
+  default     = null
+}
+
+variable "custom_policy_json" {
+  description = "Política IAM personalizada en formato JSON"
+  type        = string
+  default     = null
+}
+
 

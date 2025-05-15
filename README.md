@@ -13,7 +13,8 @@ cloud-automation-lab/
 │   ├── security_group/
 │   ├── vpc/
 │   ├── s3/
-│   └── iam/
+│   ├── iam/
+│   └── rds/
 ├── environments/
 │   ├── dev/
 │   ├── qa/
@@ -27,7 +28,7 @@ cloud-automation-lab/
 
 ### 🔹 `vpc`
 
-Crea una VPC con subred, gateway de internet y tabla de rutas.
+Crea una VPC con subredes en múltiples zonas de disponibilidad, gateway de internet y tabla de rutas.
 [Ver documentación](./modules/vpc/README.md)
 
 ### 🔹 `security_group`
@@ -49,6 +50,11 @@ Crea un bucket S3 privado con bloqueo de acceso público, versionado opcional, r
 
 Crea roles IAM con políticas de confianza, policies gestionadas y/o personalizadas, y un instance profile para EC2.
 [Ver documentación](./modules/iam/README.md)
+
+### 🔹 `rds`
+
+Crea una instancia de base de datos MySQL usando Amazon RDS, con subredes privadas y acceso restringido por seguridad.
+[Ver documentación](./modules/rds/README.md)
 
 ---
 
@@ -88,6 +94,7 @@ terraform apply
   * ✅ Políticas gestionadas (`managed_policy_arns`)
   * ✅ Políticas personalizadas (`custom_policy_json`) para casos como acceso a un bucket S3 por entorno
   * ✅ Asociación automática a EC2 mediante `iam_instance_profile`
+* El módulo `rds` permite desplegar una instancia MySQL privada, no accesible desde internet, con configuraciones mínimas listas para producción o pruebas.
 
 ---
 

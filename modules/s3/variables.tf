@@ -17,7 +17,7 @@ variable "enable_versioning" {
 variable "force_destroy" {
   description = "Permite eliminar el bucket incluso si tiene objetos"
   type        = bool
-  default     = false
+  default     = true
 }
 
 

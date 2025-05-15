@@ -5,14 +5,15 @@ provider "aws" {
 
 
 module "vpc" {
-  source            = "../../modules/vpc"
-  vpc_cidr_block    = "10.0.0.0/16"
-  subnet_cidr_block = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
-  vpc_name          = "main-vpc"
-  subnet_name       = "main-subnet"
-  env_name           = var.env_name
+  source              = "../../modules/vpc"
+  vpc_cidr_block      = "10.0.0.0/16"
+  subnet_cidr_blocks  = ["10.0.1.0/24", "10.0.2.0/24"]
+  region              = "us-east-1"
+  vpc_name            = "main-vpc"
+  subnet_name         = "main-subnet"
+  env_name            = var.env_name
 }
+
 
 module "security_group" {
   source      = "../../modules/security_group"
@@ -26,14 +27,14 @@ module "ec2" {
   source             = "../../modules/ec2"
   ami                = "ami-04505e74c0741db8d"
   instance_type      = "t2.micro"
-  subnet_id          = module.vpc.subnet_id
+  subnet_id          = module.vpc.subnet_ids[0]  # ✅ Ajustado
   key_name           = aws_key_pair.deployer.key_name
   security_group_ids = [module.security_group.security_group_id]
   env_name           = var.env_name  
 
   iam_instance_profile = module.iam_ec2_role.instance_profile_name
-
 }
+
 
 module "s3" {
   source            = "../../modules/s3"
@@ -104,4 +105,20 @@ locals {
     ]
   })
 }
+
+module "rds" {
+  source              = "../../modules/rds"
+  
+  engine              = "mysql"
+  engine_version      = "8.0"
+  instance_class      = "db.t3.micro"
+  db_name             = "basedatos"
+  username            = "admin"
+  password            = "SuperClaveSegura123"
+  allocated_storage   = 20
+  subnet_ids          = module.vpc.subnet_ids  # 👈 ¡ya listo!
+  security_group_ids  = [module.security_group.security_group_id]
+  env_name            = var.env_name
+}
+
 

@@ -14,7 +14,8 @@ cloud-automation-lab/
 │   ├── vpc/
 │   ├── s3/
 │   ├── iam/
-│   └── rds/
+│   ├── rds/
+│   └── secrets_manager/
 ├── environments/
 │   ├── dev/
 │   ├── qa/
@@ -28,7 +29,7 @@ cloud-automation-lab/
 
 ### 🔹 `vpc`
 
-Crea una VPC con subredes en múltiples zonas de disponibilidad, gateway de internet y tabla de rutas.
+Crea una VPC con dos subredes públicas, gateway de internet y tabla de rutas.
 [Ver documentación](./modules/vpc/README.md)
 
 ### 🔹 `security_group`
@@ -53,8 +54,13 @@ Crea roles IAM con políticas de confianza, policies gestionadas y/o personaliza
 
 ### 🔹 `rds`
 
-Crea una instancia de base de datos MySQL usando Amazon RDS, con subredes privadas y acceso restringido por seguridad.
+Lanza una instancia de base de datos RDS (MySQL) en subredes privadas, no pública, con credenciales suministradas dinámicamente.
 [Ver documentación](./modules/rds/README.md)
+
+### 🔹 `secrets_manager`
+
+Crea un secreto en AWS Secrets Manager para almacenar credenciales (por ejemplo, para RDS) en formato seguro.
+[Ver documentación](./modules/secrets_manager/README.md)
 
 ---
 
@@ -84,8 +90,7 @@ terraform apply
 ## 📌 Notas finales
 
 * Todos los recursos usan `env_name` como sufijo para evitar colisiones entre entornos.
-* La infraestructura es fácilmente extensible con nuevos módulos como RDS, Load Balancers, IAM, etc.
-* Cada módulo está completamente documentado y puede reutilizarse en diferentes proyectos.
+* La infraestructura es fácilmente extensible con nuevos módulos como Load Balancers, RDS, Secrets, etc.
 * El módulo `s3` requiere que el nombre del bucket sea único globalmente. Usa prefijos como tu nombre, proyecto o empresa para evitar errores (`BucketAlreadyExists`).
 * El módulo `s3` también requiere definir una región compatible (por ejemplo, `us-east-2`) desde el entorno que lo consuma.
 * El módulo `s3` incluye reglas de ciclo de vida configurables mediante variables, permitiendo eliminar versiones antiguas y objetos después de ciertos días si `enable_lifecycle = true`.
@@ -94,7 +99,8 @@ terraform apply
   * ✅ Políticas gestionadas (`managed_policy_arns`)
   * ✅ Políticas personalizadas (`custom_policy_json`) para casos como acceso a un bucket S3 por entorno
   * ✅ Asociación automática a EC2 mediante `iam_instance_profile`
-* El módulo `rds` permite desplegar una instancia MySQL privada, no accesible desde internet, con configuraciones mínimas listas para producción o pruebas.
+* El módulo `rds` permite aprovisionar una base de datos compatible con MySQL con alta disponibilidad opcional, sin acceso público y enlazada a subredes privadas.
+* El módulo `secrets_manager` permite gestionar credenciales o información sensible de forma centralizada, y se puede consumir desde otros módulos como `rds` para evitar hardcodear passwords.
 
 ---
 

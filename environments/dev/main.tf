@@ -106,6 +106,27 @@ locals {
   })
 }
 
+module "db_secret" {
+  source      = "../../modules/secrets_manager"
+  secret_name = "mysql-credentials"
+  env_name    = var.env_name
+  description = "Credenciales de acceso para RDS MySQL en ${var.env_name}"
+
+  secret_string = jsonencode({
+    username = "admin"
+    password = "SuperClaveSegura123"
+  })
+}
+
+data "aws_secretsmanager_secret_version" "mysql_credentials" {
+  secret_id = "mysql-credentials-${var.env_name}"
+}
+
+locals {
+  mysql_credentials = jsondecode(data.aws_secretsmanager_secret_version.mysql_credentials.secret_string)
+}
+
+
 module "rds" {
   source              = "../../modules/rds"
   
@@ -113,12 +134,10 @@ module "rds" {
   engine_version      = "8.0"
   instance_class      = "db.t3.micro"
   db_name             = "basedatos"
-  username            = "admin"
-  password            = "SuperClaveSegura123"
+  username            = local.mysql_credentials.username
+  password            = local.mysql_credentials.password
   allocated_storage   = 20
-  subnet_ids          = module.vpc.subnet_ids  # 👈 ¡ya listo!
+  subnet_ids          = module.vpc.subnet_ids  
   security_group_ids  = [module.security_group.security_group_id]
   env_name            = var.env_name
 }
-
-

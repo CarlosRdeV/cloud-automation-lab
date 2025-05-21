@@ -15,7 +15,8 @@ cloud-automation-lab/
 │   ├── s3/
 │   ├── iam/
 │   ├── rds/
-│   └── secrets_manager/
+│   ├── secrets_manager/
+│   └── alb/
 ├── environments/
 │   ├── dev/
 │   ├── qa/
@@ -64,6 +65,16 @@ Crea una instancia RDS con MySQL, configurada en subredes privadas y conectada a
 Permite crear secretos personalizados en AWS Secrets Manager. Usado actualmente para almacenar credenciales de RDS y evitar hardcoding.
 [Ver documentación](./modules/secrets_manager/README.md)
 
+### 🔹 `alb`
+
+Implementa un Application Load Balancer (ALB) para distribuir tráfico HTTP. Incluye:
+
+* Listener en puerto 80
+* Target Group
+* Asociación de EC2 a ALB mediante `aws_lb_target_group_attachment`
+
+[Ver documentación](./modules/alb/README.md)
+
 ---
 
 ## 🚀 Envío por entornos
@@ -103,6 +114,7 @@ terraform apply
   * ✅ Políticas personalizadas (`custom_policy_json`) para casos como acceso a un bucket S3 por entorno
   * ✅ Asociación automática a EC2 mediante `iam_instance_profile`
 * El módulo `rds` ahora permite consumir credenciales de Secrets Manager de forma segura, sin hardcodear usuarios ni contraseñas.
+* El módulo `alb` permite enrutar tráfico HTTP a una o varias instancias EC2, ideal para preparar futuras arquitecturas con contenedores, microservicios o balanceo de carga entre AZs.
 
 ---
 

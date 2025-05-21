@@ -35,6 +35,21 @@ module "ec2" {
   iam_instance_profile = module.iam_ec2_role.instance_profile_name
 }
 
+module "alb" {
+  source              = "../../modules/alb"
+  env_name            = var.env_name
+  vpc_id              = module.vpc.vpc_id
+  subnet_ids          = module.vpc.subnet_ids
+  security_group_ids  = [module.security_group.security_group_id]
+}
+
+
+resource "aws_lb_target_group_attachment" "ec2_attachment" {
+  target_group_arn = module.alb.target_group_arn
+  target_id        = module.ec2.instance_id
+  port             = 80
+}
+
 
 module "s3" {
   source            = "../../modules/s3"
@@ -120,6 +135,10 @@ module "db_secret" {
 
 data "aws_secretsmanager_secret_version" "mysql_credentials" {
   secret_id = "mysql-credentials-${var.env_name}"
+
+  depends_on = [
+    module.db_secret
+  ]
 }
 
 locals {
@@ -141,3 +160,4 @@ module "rds" {
   security_group_ids  = [module.security_group.security_group_id]
   env_name            = var.env_name
 }
+
